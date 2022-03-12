@@ -38,10 +38,11 @@ app.post("/api/students", (req, res) => {
       id: Math.random(),
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      semester: req.body.semester,
     };
     dbo
       .collection("bit")
-      .insert(myobj, { ordered: false }, function (err, res) {
+      .insertOne(myobj, { ordered: false }, function (err, res) {
         if (err) throw err;
         console.log("1 document inserted");
         db.close();
@@ -49,6 +50,18 @@ app.post("/api/students", (req, res) => {
   });
 });
 
+app.delete("/api/students", (req, res) => {
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("friends");
+    var myquery = req.body;
+    dbo.collection("bit").deleteOne(myquery, function (err, obj) {
+      if (err) throw err;
+      res.send("Cusomter Deleted");
+      db.close();
+    });
+  });
+});
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
 });
